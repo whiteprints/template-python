@@ -1,0 +1,29 @@
+{
+  "strict": ["**"],
+  "include": ["src", "tests"],
+
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "src/experimental",
+    "src/typestubs",
+    "hatch_build.py"
+  ],
+
+  "ignore": [],
+
+  "defineConstant": {
+    "DEBUG": true
+  },
+
+  "stubPath": "./src/stubs",
+
+  "venvPath": ".",
+  "venv": ".venv",
+
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": true,
+
+  "pythonVersion": "{{ target_python_version }}",
+  "pythonPlatform": "All"
+}

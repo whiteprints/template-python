@@ -1,0 +1,17 @@
+"""Shared test configuration file."""
+
+import platform
+
+import pytest
+
+
+@pytest.fixture
+def python_version() -> str:
+    """Returns the Python version as string.
+
+    Only the Major and Minor version number are returned.
+
+    Returns:
+        the current Python version as string.
+    """
+    return ".".join(platform.python_version_tuple()[:2])

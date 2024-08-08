@@ -1,0 +1,20 @@
+[build.targets.sdist]
+only-include = ["src/{% include pathjoin('includes', 'package_name.jinja') %}"]
+
+[build.targets.sdist.force-include]
+"REUSE.toml" = "REUSE.toml"
+
+[build.targets.wheel]
+packages = ["src/{% include pathjoin('includes', 'package_name.jinja') %}"]
+only-packages = true
+artifacts = ["**/*.mo"]
+exclude = [
+    "**/*.po",
+    "**/*.pot",
+]
+
+[build.hooks.custom]
+dependencies = [
+    "babel",
+    "setuptools",
+]

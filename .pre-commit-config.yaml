@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: reuse
+        name: reuse
+        entry: reuse
+        args: ["lint"]
+        always_run: true
+        pass_filenames: false
+        description: "Lint the project directory for compliance with the REUSE Specification"
+        language: system

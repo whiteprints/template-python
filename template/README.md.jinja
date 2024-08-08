@@ -1,0 +1,38 @@
+<h1 align="center">
+    <a href="index.html">
+        <img src="_static/logo.png" alt="{{ project_name }}">
+    </a>
+</h1>
+<p align="center">
+    <em>
+        {{ project_name }}. {{ description }}
+    </em>
+</p>
+<p align="center">
+{%- if code_license_id != "None" %}
+    <a href="https://pypi.python.org/pypi/{% include pathjoin('includes', 'project_slug.jinja') %}">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/{%
+            include pathjoin('includes', 'project_slug.jinja')
+        %}.svg"/>
+    </a>
+{%- endif %}
+    <a href="https://pre-commit.com/">
+        <img alt="pypi" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white"/>
+    </a>
+{%- if code_license_id != "None" %}
+    <a href="https://opensource.org/licenses/{{ code_license_id }}">
+        <img alt="pypi" src="https://img.shields.io/github/license/{{ github_user }}/{% include pathjoin('includes', 'project_slug.jinja') %}"/>
+    </a>
+{%- endif %}
+    <a href="https://www.contributor-covenant.org/version/2/1/code_of_conduct/">
+        <img alt="pypi" src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg"/>
+    </a>
+</p>
+
+---
+
+# Features
+
+- Feature 1
+- Feature 2
+- ...

@@ -1,0 +1,186 @@
+[tox]
+requires =
+    tox>=4.2
+env_list =
+    pre-commit
+    lint
+    check-types
+    BOM
+
+[testenv]
+package = wheel
+wheel_build_env = .pkg
+constrain_package_deps = true
+uv_python_preference = only-managed
+
+[testenv:pre-commit]
+description = pre-commit checks and fixes
+skip_install = true
+commands =
+    - pre-commit run --all-files --hook-stage=manual --show-diff-on-failure
+allowlist_externals =
+    pre-commit
+
+[testenv:lint]
+description = static code analysis
+package = editable
+deps =
+    coverage[toml]
+    hypothesis
+    pdbpp
+    pygments
+    pylint
+    pytest
+    pytest-cov
+    pytest-html
+    pytest-randomly
+    pytest-sugar
+    pytest-xdist
+    xdoctest
+commands =
+    pylint --rcfile .pylintrc --output-format=colorized src/ tests/ docs/
+
+[testenv:check-types]
+description = check the types
+deps =
+    coverage[toml]
+    hypothesis
+    pdbpp
+    pygments
+    pylint
+    pytest
+    pytest-cov
+    pytest-html
+    pytest-randomly
+    pytest-sugar
+    pytest-xdist
+    xdoctest
+commands =
+    pyright
+allowlist_externals =
+    pyright
+
+[testenv:BOM]
+description = generate the software bill of materials
+skip_install = true
+commands =
+    mkdir -p BOM/
+    reuse spdx -o BOM/project_licenses.spdx {posargs}
+    uv pip compile --quiet --generate-hashes pyproject.toml -o BOM/requirements.txt
+    sbom4python -r requirements.txt -o BOM/project_dependencies.spdx
+allowlist_externals =
+    mkdir
+    reuse
+    sbom4python
+    uv
+
+[testenv:print-supply-chain-licenses]
+description = list the supply chain licenses
+deps =
+    pip-licenses
+commands =
+    pip-licenses --from=mixed --with-urls {posargs}
+
+[testenv:autofix]
+description = autofix format and syntax
+skip_install = true
+commands =
+    - pre-commit run --all-files ruff-format
+    - pre-commit run --all-files ruff-fix
+allowlist_externals =
+    pre-commit
+
+[testenv:check-vulnerabilities]
+description = check for vulnerabilities
+skip_install = true
+commands =
+    pre-commit run --all-files bandit
+allowlist_externals =
+    pre-commit
+
+[testenv:audit-code-complexity]
+description = audit the code complexity
+skip_install = true
+commands =
+    radon mi src/ tests/ docs
+allowlist_externals =
+    radon
+
+[testenv:check-code-complexity]
+description = check the code complexity
+skip_install = true
+commands =
+    pre-commit run --all-files xenon
+allowlist_externals =
+    pre-commit
+
+[testenv:check-license]
+description = check the project licence
+skip_install = true
+commands =
+    pre-commit run --all-files reuse
+allowlist_externals =
+    pre-commit
+
+[testenv:check-supply-chain]
+description = check the supply-chain
+deps =
+    pip-audit
+commands =
+    pip-audit --strict
+
+[testenv:print-dependency-tree]
+description = print the dependency tree.
+commands =
+    uv tree --python-preference only-managed
+allowlist_externals =
+    uv
+
+[testenv:build-documentation]
+description = build the documentation
+package = editable
+deps =
+    furo
+    myst-parser
+    sphinx
+    sphinx-autoapi
+    sphinx-click
+    sphinxcontrib-napoleon
+    sphinxcontrib-spelling
+commands =
+    sphinx-build --color --keep-going docs/ docs_build/
+
+[testenv:serve-documentation]
+description = build and display the documentation. Use the environment variable BROWSER to change the browser used to display the documentation.
+package = editable
+deps =
+    {[testenv:build-documentation]deps}
+    sphinx-autobuild
+pass_env =
+    BROWSER
+commands =
+    sphinx-autobuild --color --keep-going --open-browser docs/ {env_tmp_dir}/docs_build/
+
+[testenv:translation-extract]
+description = extrac the translation template files from sources
+skip_install = true
+commands =
+    pybabel --quiet extract --output src/{% include pathjoin('includes', 'package_name.jinja') %}/locale/base.pot --omit-header --sort-by-file src/
+allowlist_externals =
+    pybabel
+
+[testenv:translation-init]
+description = create new message catalogs from a POT file
+skip_install = true
+commands =
+    pybabel --quiet init --input-file src/{% include pathjoin('includes', 'package_name.jinja') %}/locale/base.pot --output-dir src/{% include pathjoin('includes', 'package_name.jinja') %}/locale/ --locale {posargs}
+allowlist_externals =
+    pybabel
+
+[testenv:translation-update]
+description = update existing message catalogs from a POT file
+skip_install = true
+commands =
+    pybabel --quiet update --input-file src/{% include pathjoin('includes', 'package_name.jinja') %}/locale/base.pot --output-dir src/{% include pathjoin('includes', 'package_name.jinja') %}/locale/ --omit-header
+allowlist_externals =
+    pybabel

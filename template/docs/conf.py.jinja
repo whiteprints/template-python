@@ -1,0 +1,52 @@
+"""Sphinx configuration."""
+
+# pylint: disable=invalid-name,redefined-builtin
+
+from importlib import metadata
+
+
+project = "{{ project_name }}"
+author = "{{ author }}"
+copyright = "{% now 'utc', '%Y' %}, {{ author }}. {{ license }}"
+language = "en"
+myst_heading_anchors = 3
+extensions = [
+    "autoapi.extension",
+    "myst_parser",
+    "sphinx_copybutton",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+]
+autoapi_type = "python"
+autoapi_dirs = ["../src"]
+autodoc_typehints = "description"
+html_theme = "furo"
+html_favicon = "images/logo.svg"
+html_logo = "images/logo.svg"
+html_extra_path = ["images/"]
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "pip": ("https://pip.pypa.io/en/stable", None),
+    "tox": ("https://tox.wiki/en/stable/", None),
+}
+myst_enable_extensions = [
+    "amsmath",
+    "attrs_inline",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
+]
+
+release = metadata.version("{% include pathjoin('includes', 'package_name.jinja') %}")
+version = ".".join(release.split(".")[:3])

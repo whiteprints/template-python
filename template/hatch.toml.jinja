@@ -1,0 +1,24 @@
+[version]
+source = "vcs"
+
+[build.targets.sdist]
+only-include = ["src/{% include pathjoin('includes', 'package_name.jinja') %}"]
+core-metadata-version = '2.3'
+
+[build.targets.wheel]
+packages = ["src/{% include pathjoin('includes', 'package_name.jinja') %}"]
+only-packages = true
+artifacts = ["**/*.mo"]
+exclude = [
+    "**/*.po",
+    "**/*.pot",
+]
+core-metadata-version = '2.3'
+
+[build.hooks.custom]
+dependencies = [
+    "hatch-vcs>=0.4.0",
+    "babel>=1.25.0",
+    "setuptools>=2.16.0",
+    "typing-extensions>=4.12.1; python_version<'3.12'",
+]

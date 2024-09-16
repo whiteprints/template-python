@@ -1,0 +1,13 @@
+# General
+.secrets.*
+
+## Integration
+.nox
+.tox
+.venv
+
+## Generated files
+scripts/licenses.txt
+scripts/code_licenses.txt
+scripts/resource_licenses.txt
+BOM/

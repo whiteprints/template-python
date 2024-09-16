@@ -1,0 +1,12 @@
+{%- import pathjoin('includes', 'latest_python.jinja') as var -%}
+py3
+{%- raw -%}
+{
+{%- endraw -%}
+{%- for i in range(target_python_version[3:] | int, var.latest_python) -%}
+    {{i}},
+{%- endfor -%}
+{{- var.latest_python -}}
+{%- raw -%}
+}
+{%- endraw -%}

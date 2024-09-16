@@ -1,0 +1,53 @@
+# 📝 License
+
+Each file in the repository should have a valid [SPDX] header composed of
+- a copyright text (SPDX-FileCopyrightText)
+- a license identifier (SPDX-License-Identifier)
+
+The LICENSES directory in the project root contains all the licenses that are
+used in the project. The project's metadata follow [PEP639].
+
+This project use [REUSE] to make licensing easy for humans and machines alike.
+
+You can generate a [bill of material] listing each file of the project with its
+repsective license using:
+
+```console
+tox run -m BOM
+```
+
+[SPDX]: https://spdx.dev/
+[REUSE]: https://reuse.software/tutorial/
+[PEP639]: https://peps.python.org/pep-0639/
+[bill of material]: https://en.wikipedia.org/wiki/Software_supply_chain
+
+
+## Code License
+
+:::{attention}
+:name: {{ project_name }}'s Code License
+{%- if code_license_id != "" %}
+The _code_ of this project is released under **[{{ code_license_id }}]**.
+
+In case of doubt, please check the [SPDX] header of each individual code file.
+{%- else %}
+The **code** of this project is **proprietary and confidential**. Do not distribute.
+
+In case of doubt, please check the [SPDX] header of each individual code file
+for more information.
+{%- endif %}
+:::
+{% if ' ' in code_license_id %}
+
+[{{ code_license_id }}]: https://spdx.org/licenses/
+{% else %}
+
+[{{ code_license_id }}]: https://spdx.org/licenses/{{ code_license_id }}
+{% endif %}
+
+A copy of the license should always be distributed along with the code files.
+
+## FAQ
+
+Many of your questions about copyrights and licenses might find their answers
+here: <https://reuse.software/faq/>.

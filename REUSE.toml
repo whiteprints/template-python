@@ -1,0 +1,97 @@
+version = 1
+SPDX-PackageName = "whiteprint"
+SPDX-PackageSupplier = "Romain Brault <mail@romainbrault.com>"
+SPDX-PackageDownloadLocation = "https://github.com/whiteprints/whiteprint"
+
+# Project root
+
+[[annotations]]
+path = "REUSE.toml"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
+path = "README.md"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "MAINTAINERS.md"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "CC0-1.0"
+
+## Jinja includes
+
+[[annotations]]
+path = "includes/*.jinja"
+precedence = "override"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+## scripts
+
+[[annotations]]
+path = "scripts/*.sh"
+precedence = "override"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+## Project configuration
+
+[[annotations]]
+path = "tox.ini"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
+path = "copier.yml"
+precedence = "override"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+## Tools configuration
+
+[[annotations]]
+path = ".gitignore"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
+path = ".gitattributes"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+## Project configuration
+
+[[annotations]]
+path = ".pre-commit-config.yaml"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+## Continuous Integration
+
+[[annotations]]
+path = ".github/**/*.yml"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
+path = ".github/CODEOWNERS"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "CC0-1.0"
+
+## Template
+
+[[annotations]]
+path = "template/**"
+precedence = "override"
+SPDX-FileCopyrightText = "© 2024 Romain Brault <mail@romainbrault.com>"
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
+path = "template/CODE_OF_CONDUCT.md.jinja"
+SPDX-FileCopyrightText = [
+    "© 2014 Coraline Ada Ehmeke",
+    "© 2024 Romain Brault <mail@romainbrault.com>",
+]
+SPDX-License-Identifier = "CC-BY-4.0"

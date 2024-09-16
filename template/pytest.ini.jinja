@@ -1,0 +1,24 @@
+[pytest]
+addopts =
+  -n=auto
+  --color=yes
+  --cov-branch
+  --cov={% include pathjoin('includes', 'package_name.jinja') %}
+  --cov=tests
+  --cov-append
+  --cov-report=
+  --cov-fail-under=0
+  --xdoctest
+  --xdoctest-colored=XDOCTEST_COLORED
+  --strict-config
+  --strict-markers
+
+junit_family = legacy
+xfail_strict = true
+filterwarnings =
+    # When running tests, treat warnings as errors (e.g. -Werror). See:
+    # https://docs.pytest.org/en/latest/reference/reference.html#confval-filterwarnings
+    error
+    # Add additional warning supressions as needed here. For example, if a
+    # third-party library is throwing a deprecation warning that needs to be
+    # fixed upstream.

@@ -1,0 +1,418 @@
+{%- import pathjoin('includes', 'latest_python.jinja') as var -%}
+[tox]
+requires =
+    tox>=4.2
+labels =
+    test = {% include pathjoin('includes', 'tox_python_list.jinja') %}-test
+    coverage = {% include pathjoin('includes', 'tox_python_list.jinja') %}-test,coverage-combine,coverage-report
+    BOM = {% include pathjoin('includes', 'tox_python_list.jinja') %}-BOM
+    check-supply-chain = {% include pathjoin('includes', 'tox_python_list.jinja') %}-check-supply-chain
+env_list =
+    pre-commit
+    lint
+    check-types
+    {% include pathjoin('includes', 'tox_python_list.jinja') %}-test
+    coverage-combine
+    coverage-report
+    {% include pathjoin('includes', 'tox_python_list.jinja') %}-BOM
+    build-documentation
+    distribute
+
+[dev]
+skip_install = true
+deps =
+    beartype
+    hypothesis
+    pygments
+    pylint
+    pytest
+    pytest-html
+    pytest-md-report
+    pytest-cov
+    pytest-randomly
+    pytest-sugar
+    pytest-xdist
+    xdoctest>=1.2.0
+    hatchling
+    Babel
+
+[testenv]
+package = wheel
+wheel_build_env = .pkg
+constrain_package_deps = true
+uv_python_preference = only-managed
+
+[testenv:{% include pathjoin('includes', 'tox_python_list.jinja') %}-test]
+description = run the test suite under {base_python}
+package = editable
+deps =
+    {[dev]deps}
+commands =
+    pytest {tty:--color=yes} {posargs: \
+        --verbose \
+        --xdoctest \
+        --html={toxworkdir}{/}test_report.html \
+        --cov-context=test \
+        --no-cov-on-fail --cov-config {tox_root}{/}.coveragerc \
+        --cov-report term-missing:skip-covered \
+        --junitxml {toxworkdir}{/}junit.{envname}.xml \
+        --md-report --md-report-flavor gfm \
+        --md-report-exclude-outcomes passed skipped xpassed \
+        --md-report-output {toxworkdir}{/}test_report.md \
+        --durations=5 \
+        {tox_root}{/}tests {tox_root}{/}src
+    }
+set_env =
+    PYTHONOPTIMIZE=0
+    COVERAGE_FILE={env:TOX_COVERAGE_FILE:{provision_tox_env}{/}.coverage.{on_platform}-{envname}}
+
+[testenv:test-report]
+description = open pytest report
+skip_install = true
+commands =
+    {env:BROWSER} {toxworkdir}{/}test_report.html
+allowlist_externals =
+    {env:BROWSER}
+pass_env =
+    BROWSER=firefox
+
+[testenv:pre-commit]
+description = pre-commit checks and fixes
+skip_install = true
+base_python = 3.{{ target_python_version[3:] }}
+commands =
+    uvx --python={env_python} --quiet --no-progress pre-commit run {posargs: \
+        --all-files --hook-stage=manual --show-diff-on-failure \
+    }
+allowlist_externals =
+    uvx
+set_env =
+    PRE_COMMIT_COLOR={tty:always:auto}
+pass_env =
+    HOMEPATH
+    PROGRAMDATA
+
+[testenv:lint]
+description = static code analysis
+package = editable
+base_python = 3.{{ target_python_version[3:] }}
+no_package = true
+deps =
+    {[dev]deps}
+commands =
+    pylint {tty:--output-format=colorized} {posargs: \
+        --rcfile .pylintrc \
+        {tox_root}{/}tests {tox_root}{/}docs \
+        {tox_root}{/}src \
+    }
+
+[testenv:check-types]
+description = check the types
+no_package = true
+base_python = 3.{{ target_python_version[3:] }}
+deps =
+    {[dev]deps}
+commands =
+    uvx --python={env_python} --quiet --no-progress pyright \
+        {posargs: --pythonpath {env_python} --project .pyrightconfig_tox.json}
+allowlist_externals =
+    uvx
+
+[testenv:{% include pathjoin('includes', 'tox_python_list.jinja') %}-BOM]
+description = generate the software bill of materials under {base_python}
+skip_install = true
+depends =
+    coverage
+commands_pre =
+    mkdir -p {tox_root}{/}BOM{/}{base_python}
+    uv pip compile --quiet --no-progress --universal --generate-hashes --all-extras \
+        --python {env_python} \
+        --output-file {tox_root}{/}BOM{/}{base_python}{/}requirements.txt \
+        pyproject.toml
+commands =
+    uvx --python={env_python} --quiet --no-progress reuse spdx \
+        --output {tox_root}{/}BOM{/}{base_python}{/}project_licenses.spdx {posargs}
+    uvx --python={env_python} --quiet --no-progress \
+        --from cyclonedx-bom cyclonedx-py requirements \
+        --outfile {tox_root}{/}BOM{/}{base_python}{/}project_dependencies.cdx.json \
+        {tox_root}{/}BOM{/}{base_python}{/}requirements.txt
+    uvx --python={env_python} --quiet --no-progress pip-audit \
+        --disable-pip --require-hashes \
+        --requirement {tox_root}{/}BOM{/}{base_python}{/}requirements.txt \
+        --format cyclonedx-json \
+        --output {tox_root}{/}BOM{/}{base_python}{/}vulnerabilities.cdx.json
+allowlist_externals =
+    uv
+    uvx
+    mkdir
+
+[testenv:coverage-combine]
+description = combine  coverage
+skip_install = true
+change_dir = {provision_tox_env}
+depends =
+    pre-commit
+    {% include pathjoin('includes', 'tox_python_list.jinja') %}-test
+commands =
+    uvx --python={env_python} --quiet --no-progress coverage \
+        combine --rcfile {tox_root}{/}.coveragerc {posargs: \
+            --keep \
+        }
+pass_env =
+    COVERAGE_FILE=.coverage
+allowlist_externals =
+    uvx
+
+[testenv:coverage-report]
+description = report coverage to various file
+base_python = 3.{{ target_python_version[3:] }}
+skip_install = true
+depends =
+    coverage-combine
+commands =
+    - uvx --python={env_python} --quiet --no-progress coverage html \
+        --rcfile {tox_root}{/}.coveragerc \
+        --directory {tox_root}{/}coverage{/}htmlcov \
+        --data-file {provision_tox_env}{/}.coverage
+    - uvx --python={env_python} --quiet --no-progress coverage lcov \
+        --rcfile {tox_root}{/}.coveragerc \
+        -o {tox_root}{/}coverage{/}coverage.lcov \
+        --data-file {provision_tox_env}{/}.coverage
+    - uvx --python={env_python} --quiet --no-progress coverage xml \
+        --rcfile {tox_root}{/}.coveragerc \
+        -o {tox_root}{/}coverage{/}coverage.xml \
+        --data-file {provision_tox_env}{/}.coverage
+allowlist_externals =
+    uvx
+
+[testenv:coverage]
+description = display coverage
+base_python = 3.{{ target_python_version[3:] }}
+skip_install = true
+depends =
+    coverage-combine
+commands =
+    uvx --python={env_python} --quiet --no-progress coverage report \
+        --data-file {provision_tox_env}{/}.coverage \
+        --rcfile {tox_root}{/}.coveragerc {posargs: \
+            --skip-covered \
+        }
+allowlist_externals =
+    uvx
+
+[testenv:autofix]
+description = autofix format and syntax
+skip_install = true
+commands =
+    - uvx --python={env_python} --quiet --no-progress pre-commit \
+        run --all-files trailing-whitespace {posargs: \
+            --show-diff-on-failure \
+      }
+    - uvx --python={env_python} --quiet --no-progress pre-commit \
+        run --all-files pyproject-fmt {posargs: \
+            --show-diff-on-failure \
+        }
+    - uvx --python={env_python} --quiet --no-progress pre-commit \
+        run --all-files ruff-format {posargs: \
+            --show-diff-on-failure \
+        }
+    - uvx --python={env_python} --quiet --no-progress pre-commit \
+        run --all-files ruff-fix {posargs: \
+            --show-diff-on-failure \
+        }
+allowlist_externals =
+    uvx
+set_env =
+    PRE_COMMIT_COLOR={tty:always:auto}
+pass_env =
+    HOMEPATH
+    PROGRAMDATA
+
+[testenv:check-vulnerabilities]
+description = check for vulnerabilities
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress pre-commit run \
+        --all-files bandit
+allowlist_externals =
+    uvx
+set_env =
+    PRE_COMMIT_COLOR={tty:always:auto}
+pass_env =
+    HOMEPATH
+    PROGRAMDATA
+
+[testenv:audit-code-maintainability]
+description = audit the code maintainability
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress radon {posargs: mi} \
+        {tox_root}{/}tests{/} {tox_root}{/}docs{/} \
+        {tox_root}{/}src
+allowlist_externals =
+    uvx
+
+[testenv:check-code-maintainability]
+description = check the code maintainability
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress pre-commit run --all-files xenon
+allowlist_externals =
+    uvx
+set_env =
+    PRE_COMMIT_COLOR={tty:always:auto}
+pass_env =
+    HOMEPATH
+    PROGRAMDATA
+
+[testenv:check-license]
+description = check the project licence
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress pre-commit run reuse
+allowlist_externals =
+    uvx
+set_env =
+    PRE_COMMIT_COLOR={tty:always:auto}
+pass_env =
+    HOMEPATH
+    PROGRAMDATA
+
+[testenv:{% include pathjoin('includes', 'tox_python_list.jinja') %}-check-supply-chain]
+description = check the supply-chain under {base_python}
+commands =
+    uv pip compile --quiet --no-progress --universal --generate-hashes --all-extras \
+        --python {env_python} \
+        --output-file {env_tmp_dir}{/}requirements.txt \
+        pyproject.toml
+    uvx --python={env_python} --quiet --no-progress pip-audit \
+        --strict --disable-pip --require-hashes \
+        --requirement {env_tmp_dir}{/}requirements.txt
+allowlist_externals =
+    uv
+    uvx
+
+[testenv:print-dependency-tree]
+description = print the dependency tree.
+commands =
+    uv tree --locked {posargs: --python {env_python}}
+allowlist_externals =
+    uv
+
+[testenv:distribute]
+description = create a distribution of your package (wheel and sdist).
+skip_install = true
+depends =
+    pre-commit
+commands =
+    uv --quiet --no-progress build {posargs}
+allowlist_externals =
+    uv
+
+[testenv:build-documentation]
+description = build the documentation
+package = editable
+base_python = 3.{{ target_python_version[3:] }}
+depends =
+    pre-commit
+deps =
+    furo
+    myst-parser[linkify]
+    sphinx
+    sphinx-autoapi
+    sphinx-copybutton
+    sphinxcontrib-napoleon
+    sphinxcontrib-spelling
+commands =
+    sphinx-build {tty:--color} {posargs: \
+        -b linkcheck \
+        --fail-on-warning \
+        --keep-going {tox_root}{/}docs {tox_root}{/}docs_build \
+    }
+
+[testenv:serve-documentation]
+description = build and display the documentation. Use the environment variable BROWSER to change the browser used to display the documentation.
+package = editable
+base_python = 3.{{ target_python_version[3:] }}
+deps =
+    {[testenv:build-documentation]deps}
+    sphinx-autobuild
+pass_env =
+    BROWSER
+    DISPLAY
+commands =
+    sphinx-autobuild {tty:--color} {posargs: \
+        --keep-going --port 0 --open-browser \
+        {tox_root}{/}docs {env_tmp_dir} \
+    }
+
+[testenv:translation-extract]
+description = extrac the translation template files from sources
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress --from Babel pybabel \
+        --quiet extract --omit-header --sort-by-file \
+        --output {tox_root}{/}src{/}{% include pathjoin('includes', 'package_name.jinja') %}{/}locale{/}base.pot \
+        {tox_root}{/}src
+allowlist_externals =
+    uvx
+
+[testenv:translation-init]
+description = create new message catalogs from a POT file
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress --from Babel pybabel \
+        --quiet init --omit-header \
+        --input-file {tox_root}{/}src{/}{% include pathjoin('includes', 'package_name.jinja') %}{/}locale{/}base.pot \
+        --output-dir {tox_root}{/}src{/}{% include pathjoin('includes', 'package_name.jinja') %}{/}locale
+allowlist_externals =
+    uvx
+
+[testenv:translation-update]
+description = update existing message catalogs from a POT file
+skip_install = true
+commands =
+    uvx --python={env_python} --quiet --no-progress --from Babel pybabel \
+        --quiet update --omit-header \
+        --input-file {tox_root}{/}src{/}{% include pathjoin('includes', 'package_name.jinja') %}{/}locale{/}base.pot \
+        --output-dir {tox_root}{/}src{/}{% include pathjoin('includes', 'package_name.jinja') %}{/}locale
+allowlist_externals =
+    uvx
+
+[testenv:clean]
+description = clean all temporary files
+skip_install = true
+commands =
+    uvx --python={env_python} \
+        --quiet --no-progress pyclean {posargs}
+allowlist_externals =
+    uvx
+
+[testenv:install-dev-tools]
+description = Install the development tools
+skip_install = true
+commands =
+    uv tool install --upgrade tox --with tox-uv
+    uv tool install --upgrade Babel
+    uv tool install --upgrade bandit
+    uv tool install --upgrade blacken-docs
+    uv tool install --upgrade coverage
+    uv tool install --upgrade pip-audit
+    uv tool install --upgrade pre-commit --with pre-commit-uv
+    uv tool install --upgrade pyright
+    uv tool install --upgrade radon
+    uv tool install --upgrade reuse
+    uv tool install --upgrade ruff
+    uv tool install --upgrade cyclonedx-bom
+    uv tool install --upgrade tryceratops
+    uv tool install --upgrade xenon
+allowlist_externals =
+    uv
+
+[testenv:build-container]
+description = build the project container
+skip_install = true
+commands =
+    uv run {tox_root}/scripts/build_container_image.py {posargs:all}
+allowlist_externals =
+    uv

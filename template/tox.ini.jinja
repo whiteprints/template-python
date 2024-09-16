@@ -4,7 +4,7 @@ requires =
     tox>=4.2
 labels =
     test = {% include pathjoin('includes', 'tox_python_list.jinja') %}-test
-    coverage = {% include pathjoin('includes', 'tox_python_list.jinja') %}-test,coverage-combine,coverage-report
+    coverage = {% include pathjoin('includes', 'tox_python_list.jinja') %}-test,coverage-combine,coverage
     BOM = {% include pathjoin('includes', 'tox_python_list.jinja') %}-BOM
     check-supply-chain = {% include pathjoin('includes', 'tox_python_list.jinja') %}-check-supply-chain
 env_list =
@@ -13,7 +13,7 @@ env_list =
     check-types
     {% include pathjoin('includes', 'tox_python_list.jinja') %}-test
     coverage-combine
-    coverage-report
+    coverage
     {% include pathjoin('includes', 'tox_python_list.jinja') %}-BOM
     build-documentation
     distribute

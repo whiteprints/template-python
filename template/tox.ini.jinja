@@ -57,6 +57,7 @@ commands =
         --cov-report term-missing:skip-covered \
         --junitxml {toxworkdir}{/}junit.{envname}.xml \
         --md-report --md-report-flavor gfm \
+        --md-report-exclude-outcomes passed skipped xpassed \
         --md-report-output {toxworkdir}{/}test_report.md \
         --durations=5 \
         {tox_root}{/}tests {tox_root}{/}src

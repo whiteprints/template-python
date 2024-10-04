@@ -1,0 +1,108 @@
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "tomli>=2.0.1; python_full_version<'3.11'",
+#     "tomli_w>=1.0.0",
+#     "license-expression>=30.3.1",
+# ]
+# ///
+"""Module to update `pyproject.toml` with license file entries.
+
+This module provides functionality to modify the `pyproject.toml` file
+to include paths to license files in the `license-files` field under the
+`[project]` section. It includes functions to list license files, parse SPDX
+expressions to extract license IDs, and update the `pyproject.toml` file accordingly.
+"""
+import sys
+from pathlib import Path
+
+import tomli_w
+from license_expression import get_spdx_licensing
+
+
+if sys.version_info < (3, 11):
+    import tomli as tomllib
+else:
+    import tomllib
+
+
+def update_license_files_in_pyproject_toml(
+    licenses: set[str],
+) -> None:
+    """Updates the `pyproject.toml` file to modify the `license-files` field.
+
+    This function loads the existing data from `pyproject.toml`, modifies
+    the `license-files` field under the `[project]` section with the
+    specified paths, and writes the updated data back to the file.
+
+    Args:
+        license_paths (list[str]): A list of paths to license files.
+    """
+    with Path("pyproject.toml").open("rb") as file:
+        data = tomllib.load(file)
+        project = data.setdefault("project", {})
+
+        project["license-files"] = {
+            "paths": list(
+                set(project.get("license-files", {}).get("paths", []))
+                | {f"LICENSES/{license}.txt" for license in licenses}
+            )
+        }
+
+    with Path("pyproject.toml").open("wb") as file:
+        tomli_w.dump(data, file)
+
+
+def list_licenses() -> set[str]:
+    """Lists all license names from license files in the `LICENSES` directory.
+
+    This function scans the `LICENSES` directory for `.txt` files and returns
+    a set of filenames (without the `.txt` extension) which represent the
+    available licenses.
+
+    Returns:
+        set[str]: A set of license names extracted from the filenames.
+    """
+    return {path.stem for path in Path("LICENSES").glob("*.txt")}
+
+
+def parse_spdx_expression(expression: str) -> set[str]:
+    """Parses an SPDX expression to extract license IDs.
+
+    This function extracts and returns license IDs from the given SPDX expression,
+    ignoring operators and other non-license elements.
+
+    Args:
+        expression (str): The SPDX expression containing license IDs.
+
+    Returns:
+        set[str]: A set of extracted license IDs.
+    """
+    licensing = get_spdx_licensing()
+    return {
+        license_symbol.obj
+        for license_symbol in
+        licensing.license_symbols(expression)
+    }
+
+
+def main() -> None:
+    """Add the License-File."""
+    update_license_files_in_pyproject_toml(
+{%- if code_license_id != "" %}
+        list_licenses() & parse_spdx_expression("{{ code_license_id }}")
+{%- else %}
+        list_licenses() & parse_spdx_expression("LicenseRef-PROPRIETARY")
+{%- endif %}
+    )
+    update_license_files_in_pyproject_toml(
+{%- if resources_license_id != "" %}
+        list_licenses() & parse_spdx_expression("{{ resources_license_id }}")
+{%- else %}
+        list_licenses() & parse_spdx_expression("LicenseRef-PROPRIETARY")
+{%- endif %}
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,195 @@
+project_name:
+  type: str
+  help: What is your project name?
+  validator: >-
+    {% if not (project_name | regex_search('^[A-Za-z][A-Za-z0-9-_ ]*$')) %}
+        The project name must start with a letter, followed one or more letters,
+        digits, spaces, underscores or dashes all lowercase.
+    {% endif %}
+description:
+  type: str
+  help: A short description of your project.
+  default: "A Python package."
+author:
+  type: str
+  help: What is your name?
+  validator: >-
+    {% if not author %}
+      Cannot be empty.
+    {% endif %}
+organisation:
+  type: str
+  help: What is your organisation?
+  default: "{{ author }}"
+author_email:
+  type: str
+  help: What is your email?
+  validator: >-
+    {% if not (author_email | regex_search('^\S+@\S+\.\S+$')) %}
+      Invalid email.
+    {% endif %}
+  default: "{{ author | lower | replace(' ', '.') }}@{{ organisation | lower | replace(' ', '.') }}"
+code_license_id:
+  type: str
+  help: What is the license ID of the code and documentation of you project? Leave
+    empty for proprietary.
+resources_license_id:
+  type: str
+  help: What is the license ID of the resources of you project (translations, data,
+    media, etc.)? Leave empty for proprietary
+copyright_holder:
+  type: str
+  help: Who is the copyright holder?
+  default: "The {{ project_name }} authors and contributors"
+copyright_holder_email:
+  type: str
+  help: What is the copyright holder email address?
+  default: "{{ author_email }}"
+header:
+  type: str
+  help: Would you like to add a file header?
+  default: "© {% now 'utc', '%Y' %} {{ copyright_holder }} <{{ copyright_holder_email }}> - All Rights Reserved"
+  when: "{{ code_license_id == '' or resources_license_id == '' }}"
+line_length:
+  type: int
+  help: What is the line wrap length of your code?
+  default: 79
+  choices:
+    - 79
+    - 88
+    - 99
+    - 119
+target_python_version:
+  type: str
+  help: What is the _oldest_ supported python version?
+  default: "3.12"
+  choices:
+    "3.9": "py39"
+    "3.10": "py310"
+    "3.11": "py311"
+    "3.12": "py312"
+    "3.13 [release-candidate]": "py313"
+_subdirectory: "template"
+_jinja_extensions:
+  - jinja2_time.TimeExtension
+  - copier_templates_extensions.TemplateExtensionLoader
+  - extensions/context.py:ContextUpdater
+_tasks:
+  - ["git", "init"]
+  - ["git", "config", "--local", "user.name", "{{ author }}"]
+  - ["git", "config", "--local", "user.email", "{{ author_email }}"]
+  - ["uv", "--quiet", "--no-progress", "lock", "--python", "3.{{ target_python_version[3:] }}"]
+  - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "translation-extract"]
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--license", "{{ code_license_id }}",
+    "--copyright-prefix", "spdx-symbol",
+    "--recursive", "--style", "python",
+    "src/", "tests/", "container/", "docs/conf.py", "scripts",
+    "hatch_build.py", "hatch.toml", "REUSE.toml",
+    "tox.ini",
+    "pytest.ini", ".ruff.toml", ".pylintrc", "bandit.yaml",
+    ".pre-commit-config.yaml", ".coveragerc", ".editorconfig",
+    "pyrightconfig.json", ".pyrightconfig_tox.json",
+    ".gitignore", ".gitattributes",
+  ]
+    when: "{{ code_license_id != '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "SPDX-FileCopyrightText: {{ header }}",
+    "--license", "LicenseRef-PROPRIETARY",
+    "--recursive", "--style", "python",
+    "src/", "tests/", "container/", "docs/conf.py", "scripts",
+    "hatch_build.py", "hatch.toml", "REUSE.toml",
+    "tox.ini", "pyproject.toml",
+    "pytest.ini", ".ruff.toml", ".pylintrc", "bandit.yaml",
+    ".pre-commit-config.yaml", ".coveragerc", ".editorconfig",
+    "pyrightconfig.json", ".pyrightconfig_tox.json",
+    ".gitignore", ".gitattributes",
+  ]
+    when: "{{ code_license_id == '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--license", "{{ code_license_id }}",
+    "--copyright-prefix", "spdx-symbol",
+    "--style", "html",
+    "README.md", "SECURITY.md", "CONTRIBUTING.md", "MAINTAINERS.md","INSTALL.md",
+    "docs/index.md", "docs/guide.md", "docs/SECURITY.md",
+    "docs/CODE_OF_CONDUCT.md", "docs/CONTRIBUTING.md", "docs/INSTALL.md",
+    "docs/contributing_index.md", "docs/project.md",
+    "docs/MAINTAINERS.md", "docs/licensing.md", "docs/quickstart.md",
+    "docs/licensing_faq.md", "docs/licensing_index.md",
+    "docs/_static/logo.svg", "docs/_static/banner.svg",
+  ]
+    when: "{{ resources_license_id != '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "SPDX-FileCopyrightText: {{ header }}",
+    "--license", "LicenseRef-PROPRIETARY",
+    "--style", "html",
+    "README.md", "SECURITY.md", "CONTRIBUTING.md", "MAINTAINERS.md", "INSTALL.md",
+    "docs/index.md", "docs/guide.md", "docs/SECURITY.md",
+    "docs/CODE_OF_CONDUCT.md", "docs/CONTRIBUTING.md", "docs/INSTALL.md",
+    "docs/contributing_index.md", "docs/project.md",
+    "docs/MAINTAINERS.md", "docs/licensing.md", "docs/quickstart.md",
+    "docs/licensing_faq.md", "docs/licensing_index.md",
+    "docs/_static/logo.svg", "docs/_static/banner.svg",
+  ]
+    when: "{{ resources_license_id == '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--copyright-prefix", "spdx-symbol",
+    "--recursive", "--style", "rst",
+    "docs/_autoapi_templates/",
+  ]
+    when: "{{ resources_license_id != '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "SPDX-FileCopyrightText: {{ header }}",
+    "--recursive", "--style", "rst",
+    "docs/_autoapi_templates/",
+  ]
+    when: "{{ resources_license_id == '' }}"
+  - ["uvx", "--quiet", "--no-progress", "reuse", "download", "--all"]
+  - ["uv", "run", "inject_licenses_files.py"]
+  - ["rm", "inject_licenses_files.py"]
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--license", "{{ code_license_id }}",
+    "--style", "python",
+    "pyproject.toml",
+  ]
+    when: "{{ code_license_id != '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "SPDX-FileCopyrightText: {{ header }}",
+    "--license", "LicenseRef-PROPRIETARY",
+    "--style", "python",
+    "pyproject.toml",
+  ]
+    when: "{{ code_license_id == '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--license", "{{ code_license_id }}",
+    "--copyright-prefix", "spdx-symbol",
+    "--force-dot-license",
+    "uv.lock",
+  ]
+    when: "{{ code_license_id != '' }}"
+  - command: [
+    "uvx", "--quiet", "--no-progress", "reuse", "annotate",
+    "--copyright", "SPDX-FileCopyrightText: {{ header }}",
+    "--license", "LicenseRef-PROPRIETARY",
+    "--force-dot-license",
+    "uv.lock",
+  ]
+    when: "{{ code_license_id == '' }}"
+  - ["git", "add", "--all"]
+  - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "autofix", "--"]
+  - ["git", "add", "--update"]
+  - ["git", "commit", "--message", "Initial commit: 🥇 set up Python project"]

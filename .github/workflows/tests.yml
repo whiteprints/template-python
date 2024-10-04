@@ -1,0 +1,81 @@
+name: Tests
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    tags-ignore: ["**"]
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: tox env ${{ matrix.tox_env }} under python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python:
+          - "3.13"
+        tox_env:
+          - pre-commit
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Pick environment to run
+        run: |
+          import os;
+          env = "TOXENV=${{ matrix.tox_env }}\n"
+          with open(os.environ["GITHUB_ENV"], mode="a", encoding="utf-8") as file_handler:
+              file_handler.write(env)
+        shell: python
+      - name: Run the test suite
+        run: |
+          echo $TOXENV
+          uvx --quiet --no-progress --with tox-uv tox -vvv run
+  test:
+    name: Run ${{ matrix.session }} tests under python ${{ matrix.python }} on ${{ matrix.os }}
+    needs: check
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: true
+      matrix:
+        python:
+          - "3.13"
+          - "3.12"
+          - "3.11"
+          - "3.10"
+          - "3.9"
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        session:
+          - open-source
+          - proprietary
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Pick environment to run
+        run: |
+          import os;
+          env = "TOXENV=py{}{}-test-${{ matrix.session }}\n".format(*"${{ matrix.python }}".split("."))
+          with open(os.environ["GITHUB_ENV"], mode="a", encoding="utf-8") as file_handler:
+              file_handler.write(env)
+        shell: python
+      - name: Run the test suite
+        run: |
+          git config --global init.defaultBranch main
+          git config --global user.email whiteprints@pm.me
+          git config --global user.name Whiteprints
+          echo $TOXENV
+          uvx --quiet --no-progress --with tox-uv tox run

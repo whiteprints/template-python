@@ -39,7 +39,7 @@ resources_license_id:
     media, etc.)? Leave empty for proprietary
 copyright_holder:
   type: str
-  help: Who is the copyright holder?
+  help: Who is (are) the copyright(s) holder(s)?
   default: "The {{ project_name }} authors and contributors"
 copyright_holder_email:
   type: str

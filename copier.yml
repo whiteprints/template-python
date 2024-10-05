@@ -82,7 +82,7 @@ _tasks:
   - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "translation-extract"]
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
-    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--license", "{{ code_license_id }}",
     "--copyright-prefix", "spdx-symbol",
     "--recursive", "--style", "python",
@@ -111,7 +111,7 @@ _tasks:
     when: "{{ code_license_id == '' }}"
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
-    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--license", "{{ code_license_id }}",
     "--copyright-prefix", "spdx-symbol",
     "--style", "html",
@@ -140,7 +140,7 @@ _tasks:
     when: "{{ resources_license_id == '' }}"
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
-    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--copyright-prefix", "spdx-symbol",
     "--recursive", "--style", "rst",
     "docs/_autoapi_templates/",
@@ -158,7 +158,7 @@ _tasks:
   - ["rm", "inject_licenses_files.py"]
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
-    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--license", "{{ code_license_id }}",
     "--style", "python",
     "pyproject.toml",
@@ -174,7 +174,7 @@ _tasks:
     when: "{{ code_license_id == '' }}"
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
-    "--copyright", "{{ author }} <{{ author_email }}>",
+    "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--license", "{{ code_license_id }}",
     "--copyright-prefix", "spdx-symbol",
     "--force-dot-license",

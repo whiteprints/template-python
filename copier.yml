@@ -112,7 +112,7 @@ _tasks:
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
     "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
-    "--license", "{{ code_license_id }}",
+    "--license", "{{ resources_license_id }}",
     "--copyright-prefix", "spdx-symbol",
     "--style", "html",
     "README.md", "SECURITY.md", "CONTRIBUTING.md", "MAINTAINERS.md","INSTALL.md",

@@ -8,11 +8,19 @@ from pathlib import Path
 
 project = "{{ project_name }}"
 author = "{{ author }}"
-project_copyright = "{% now 'utc', '%Y' %} {{ copyright_holder }} <{{ copyright_holder_email }}> - {}"
+project_copyright = "{% now 'utc', '%Y' %} {} {} - {}"
 {%- if resources_license_id == "" %}
-project_copyright = project_copyright.format("All Rights Reserved")
+project_copyright = project_copyright.format(
+    "{{ copyright_holder }}",
+    "<{{ copyright_holder_email }}>",
+    "All Rights Reserved",
+  )
 {%- else %}
-project_copyright = project_copyright.format("Distributed under license {{ resources_license_id }}")
+project_copyright = project_copyright.format(
+    "{{ copyright_holder }}",
+    "<{{ copyright_holder_email }}>",
+    "Distributed under license {{ resources_license_id }}"
+)
 {%- endif %}
 release = metadata.version("{{ package_name }}")
 version = ".".join(release.split(".")[:3])

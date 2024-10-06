@@ -11,13 +11,13 @@ author = "{{ author }}"
 project_copyright = "{% now 'utc', '%Y' %} {} {} - {}"
 {%- if resources_license_id == "" %}
 project_copyright = project_copyright.format(
-    "{{ copyright_holder }}",
+    '{{ copyright_holder }}',
     "<{{ copyright_holder_email }}>",
     "All Rights Reserved",
   )
 {%- else %}
 project_copyright = project_copyright.format(
-    "{{ copyright_holder }}",
+    '{{ copyright_holder }}'',
     "<{{ copyright_holder_email }}>",
     "Distributed under license {{ resources_license_id }}"
 )

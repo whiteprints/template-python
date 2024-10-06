@@ -40,7 +40,7 @@ resources_license_id:
 copyright_holder:
   type: str
   help: Who is (are) the copyright(s) holder(s)?
-  default: "The {{ project_name }} authors and contributors"
+  default: "The \"{{ project_name }}\" contributors"
 copyright_holder_email:
   type: str
   help: What is the copyright holder email address?

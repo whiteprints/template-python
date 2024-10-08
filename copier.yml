@@ -25,7 +25,7 @@ author_email:
   type: str
   help: What is your email?
   validator: >-
-    {% if not (author_email | regex_search('^\S+@\S+\.\S+$')) %}
+    {% if not (author_email | regex_search('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')) %}
       Invalid email.
     {% endif %}
   default: "{{ author | lower | replace(' ', '.') }}@{{ organisation | lower | replace(' ', '.') }}"
@@ -33,10 +33,18 @@ code_license_id:
   type: str
   help: What is the license ID of the code and documentation of you project? Leave
     empty for proprietary.
+  validator: >-
+    {% if not code_license_id is spdx_expression %}
+      Invalid SPDX license expression.
+    {% endif %}
 resources_license_id:
   type: str
   help: What is the license ID of the resources of you project (translations, data,
     media, etc.)? Leave empty for proprietary
+  validator: >-
+    {% if not code_license_id is spdx_expression %}
+      Invalid SPDX license expression.
+    {% endif %}
 copyright_holder:
   type: str
   help: Who is (are) the copyright(s) holder(s)?
@@ -45,6 +53,10 @@ copyright_holder_email:
   type: str
   help: What is the copyright holder email address?
   default: "{{ author_email }}"
+  validator: >-
+    {% if not (author_email | regex_search('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')) %}
+      Invalid email.
+    {% endif %}
 header:
   type: str
   help: Would you like to add a file header?
@@ -72,8 +84,8 @@ target_python_version:
 _subdirectory: "template"
 _jinja_extensions:
   - jinja2_time.TimeExtension
-  - copier_templates_extensions.TemplateExtensionLoader
-  - extensions/context.py:ContextUpdater
+  - whiteprints_template_context.context.ContextUpdater
+  - whiteprints_template_context.filters.WhiteprintsFilters
 _tasks:
   - ["git", "init"]
   - ["git", "config", "--local", "user.name", "{{ author }}"]

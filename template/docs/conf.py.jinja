@@ -8,12 +8,10 @@ from pathlib import Path
 
 project = "{{ project_name }}"
 author = "{{ author }}"
-project_copyright = "{% now 'utc', '%Y' %} {} {} - {}"
 {%- if resources_license_id == "" %}
-project_copyright = project_copyright.format(
-    '{{ header }}',
-  )
+project_copyright = '{{ header }}'
 {%- else %}
+project_copyright = "{% now 'utc', '%Y' %} {} {} - {}"
 project_copyright = project_copyright.format(
     '{{ copyright_holder }}',
     "<{{ copyright_holder_email }}>",

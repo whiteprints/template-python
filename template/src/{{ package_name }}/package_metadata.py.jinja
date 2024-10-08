@@ -18,7 +18,11 @@ __license_file__: Final = [
     for license_path in metadata.files(__package__ or "") or ()
     if (
         license_path.match("LICENSES/*.txt")
+{%- if code_license_id == "" %}
+        and license_path.stem == "LicenseRef-PROPRIETARY"
+{%- else %}
         and license_path.stem in "{{ code_license_id }}"
+{%- endif %}
     )
 ]
 """The package code license file as found by importlib metadata."""

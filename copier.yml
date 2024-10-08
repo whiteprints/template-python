@@ -42,7 +42,7 @@ resources_license_id:
   help: What is the license ID of the resources of you project (translations, data,
     media, etc.)? Leave empty for proprietary
   validator: >-
-    {% if not code_license_id is spdx_expression %}
+    {% if not resources_license_id is spdx_expression %}
       Invalid SPDX license expression.
     {% endif %}
 copyright_holder:

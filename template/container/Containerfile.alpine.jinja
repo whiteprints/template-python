@@ -1,6 +1,6 @@
-ARG PYTHON_VERSION=3.12.6
+ARG PYTHON_VERSION=3.13.0
 ARG BASE_OS=alpine3.20
-ARG DIGEST="sha256:e0e4d3db19333a970e7acfdcb8863efe065be6c3038ef5018694f98162bffec0"
+ARG DIGEST="sha256:81362dd1ee15848b118895328e56041149e1521310f238ed5b2cdefe674e6dbf"
 
 ARG UV_COMPILE_BYTECODE=1
 ARG PYTHONDONTWRITEBYTECODE=1
@@ -22,8 +22,8 @@ ARG VIRTUAL_ENV=/opt/venv
 #   - These Python packages usually only provide binary wheels for GLIBC, so
 #   the packages will need to be recompiled fully within the container images,
 #   increasing build times.
-ARG UV_VERSION=0.4.19
-ARG UV_DIGEST="sha256:fbe32fbf0d0b5cd37a1dc705205922ba1f192c59b91a63039a05d19b1c2d457a
+ARG UV_VERSION=0.4.20
+ARG UV_DIGEST="sha256:4e7932d37d1156f8f7be5992363f1307160aff4b3031ee99b03155df78900575"
 ARG UV_TAG=${UV_VERSION}${UV_DIGEST:+@${UV_DIGEST}}
 ARG UV_BIN="/usr/local/bin"
 

@@ -74,13 +74,13 @@ line_length:
 target_python_version:
   type: str
   help: What is the _oldest_ supported python version?
-  default: "3.12"
+  default: "3.9"
   choices:
     "3.9": "py39"
     "3.10": "py310"
     "3.11": "py311"
     "3.12": "py312"
-    "3.13 [release-candidate]": "py313"
+    "3.13": "py313"
 _subdirectory: "template"
 _jinja_extensions:
   - jinja2_time.TimeExtension

@@ -46,6 +46,12 @@ license = "{{ code_license_id }}"
 license = "LicenseRef-PROPRIETARY"
 {%- endif %}
 
+[tool.pyproject-fmt]
+column_width = 79
+indent = 4
+keep_full_version = false
+max_supported_python = "3.13"
+
 [tool.uv]
 managed = true
 dev-dependencies = [

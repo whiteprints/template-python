@@ -95,17 +95,22 @@ select = [
     "DOC",   # pydoclint
     "RUF",   # ruff-specific rules
 ]
-# We ignore
-#  - ANN101: deprecated
-#  - COM812: conflict when use with the formatter
-#  - CPY: copyright are checked with REUSE
-#  - ISC001: conflict when use with the formatter
-#  - S: safety is checked directly with Bandit
 ignore = [
   "ANN101",  # deprecated
-  "COM812",  # conflict when used with the formatter
   "CPY",     # copyright are checked with reuse
+  "W191",    # conflict when used with the formatter
+  "E111",    # conflict when used with the formatter
+  "E114",    # conflict when used with the formatter
+  "E117",    # conflict when used with the formatter
+  "D206",    # conflict when used with the formatter
+  "D300",    # conflict when used with the formatter
+  "Q000",    # conflict when used with the formatter
+  "Q001",    # conflict when used with the formatter
+  "Q002",    # conflict when used with the formatter
+  "Q003",    # conflict when used with the formatter
+  "COM812",  # conflict when used with the formatter
   "ISC001",  # conflict when used with the formatter
+  "ISC002",  # conflict when used with the formatter
   "S",       # checked with bandit
   "TCH001", "TCH002", "TCH003"  # See https://github.com/beartype/beartype/discussions/460
 ]

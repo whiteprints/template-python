@@ -20,7 +20,7 @@ author:
 organisation:
   type: str
   help: What is your organisation?
-  default: "{{ author }}"
+  default: "{{ author.replace(' ', '') }}"
 author_email:
   type: str
   help: What is your email?

@@ -51,7 +51,7 @@ copyright_holder:
   default: "the \"{{ project_name }}\" contributors"
 copyright_holder_email:
   type: str
-  help: What is the copyright holder email address?
+  help: What is the copyright(s) holder(s) email address?
   default: "{{ author_email }}"
   validator: >-
     {% if not (author_email | regex_search('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')) %}

@@ -5,6 +5,7 @@ requires =
     uv>=0.4.20
 labels =
     test = {{ tox_python_list }}-test
+    check-types = {{ tox_python_list }}-check-types
     coverage = {{ tox_python_list }}-test,coverage-combine,coverage
     BOM-vulnerabilities = {{ tox_python_list }}-BOM-vulnerabilities,
     BOM = BOM-licenses,{{ tox_python_list }}-BOM-vulnerabilities,
@@ -12,7 +13,7 @@ labels =
 env_list =
     pre-commit
     lint
-    check-types
+    {{ tox_python_list }}-check-types
     check-vulnerabilities
     check-exceptions
     check-code-maintainability
@@ -128,9 +129,8 @@ commands =
         {tox_root}{/}src \
     }
 
-[testenv:check-types]
+[testenv:{{ tox_python_list }}-check-types]
 description = check the types
-base_python = {[dev]base_python}
 deps =
     {[dev]deps}
 commands_pre =
@@ -138,7 +138,8 @@ commands_pre =
 commands =
     {[testenv]uvx_bin} \
          pyright {posargs: \
-            --pythonpath {env_python} --project .pyrightconfig_tox.json \
+            --pythonpath {env_python} \
+            --project {tox_root}{/}.pyrightconfig_tox.json \
         }
 
 [testenv:BOM-licenses]

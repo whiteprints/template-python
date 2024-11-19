@@ -46,17 +46,17 @@ __all__: Final = ["DebugInfo", "PackageInfo", "gather_debug_info"]
 {%- if target_python_version[3:] | int < 11 %}
 
 
-if sys.version_info < (3, 11):
-    from typing_extensions import NotRequired
-else:
+if sys.version_info >= (3, 11):
     from typing import NotRequired
+else:
+    from typing_extensions import NotRequired
 {%- endif %}
 {%- if target_python_version[3:] | int < 10 %}
 
-if sys.version_info < (3, 10):
-    from importlib_metadata import packages_distributions
-else:
+if sys.version_info >= (3, 10):
     from importlib.metadata import packages_distributions
+else:
+    from importlib_metadata import packages_distributions
 {%- endif %}
 
 

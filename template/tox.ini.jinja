@@ -4,24 +4,24 @@ requires =
     tox-uv>=1.16.0
     uv>=0.5.1
 labels =
-    tests = py{{ tox_python_list }
-    check-types = py{{ tox_python_list }}-check-types
-    coverage = py{{ tox_python_list }},coverage-combine,coverage
-    BOM-vulnerabilities = py{{ tox_python_list }}-BOM-vulnerabilities,
-    BOM = BOM-licenses,py{{ tox_python_list }}-BOM-vulnerabilities,
-    check-supply-chain = py{{ tox_python_list }}-check-supply-chain
+    tests = {{ tox_python_list }}
+    check-types = {{ tox_python_list }}-check-types
+    coverage = {{ tox_python_list }},coverage-combine,coverage
+    BOM-vulnerabilities = {{ tox_python_list }}-BOM-vulnerabilities,
+    BOM = BOM-licenses,{{ tox_python_list }}-BOM-vulnerabilities,
+    check-supply-chain = {{ tox_python_list }}-check-supply-chain
 env_list =
     pre-commit
     lint
-    py{{ tox_python_list }}-check-types
+    {{ tox_python_list }}-check-types
     check-vulnerabilities
     check-exceptions
     check-code-maintainability
-    py{{ tox_python_list }}
+    {{ tox_python_list }}
     coverage-combine
     coverage
     BOM-licenses
-    py{{ tox_python_list }}-BOM-vulnerabilities
+    {{ tox_python_list }}-BOM-vulnerabilities
     check-documentation-links
     build-documentation
     distribute
@@ -83,7 +83,7 @@ commands =
         {tox_root}{/}src \
     }
 
-[testenv:py{{ tox_python_list }}-check-types]
+[testenv:{{ tox_python_list }}-check-types]
 description = check the types
 uv_sync_flags = --verbose, --no-progress, --group=check-types, --no-install-project
 commands =
@@ -106,7 +106,7 @@ commands =
 allowlist_externals =
     mkdir
 
-[testenv:py{{ tox_python_list }}-BOM-vulnerabilities]
+[testenv:{{ tox_python_list }}-BOM-vulnerabilities]
 description = generate the software bill of materials under {base_python}
 runner = uv-venv-runner
 skip_install = true
@@ -135,7 +135,7 @@ uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, 
 change_dir = {work_dir}
 depends =
     pre-commit
-    py{{ tox_python_list }}
+    {{ tox_python_list }}
 commands =
     coverage \
         combine --rcfile {tox_root}{/}.coveragerc {posargs: \
@@ -180,26 +180,26 @@ runner = uv-venv-runner
 skip_install = true
 commands =
     - {[testenv]uvx_bin} \
-        pre-commit \
         --with pre-commit-uv \
+        pre-commit \
         run --all-files trailing-whitespace {posargs: \
               --show-diff-on-failure \
         }
     - {[testenv]uvx_bin} \
-        pre-commit \
         --with pre-commit-uv \
+        pre-commit \
         run --all-files pyproject-fmt {posargs: \
             --show-diff-on-failure \
         }
     - {[testenv]uvx_bin} \
-        pre-commit \
         --with pre-commit-uv \
+        pre-commit \
         run --all-files ruff-format {posargs: \
             --show-diff-on-failure \
         }
     - {[testenv]uvx_bin} \
-        pre-commit \
         --with pre-commit-uv \
+        pre-commit \
         run --all-files ruff {posargs: \
             --show-diff-on-failure \
         }
@@ -270,7 +270,7 @@ pass_env =
     PROGRAMDATA
     PRE_COMMIT_COLOR={tty:always:auto}
 
-[testenv:py{{ tox_python_list }}-check-supply-chain]
+[testenv:{{ tox_python_list }}-check-supply-chain]
 description = check the supply-chain under {base_python}
 runner = uv-venv-runner
 skip_install = true

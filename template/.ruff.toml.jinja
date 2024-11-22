@@ -75,7 +75,7 @@ select = [
     "SLOT",  # flake8-slot
     "SIM",   # flake8-simplify
     "TID",   # flake8-tidy-imports
-    "TCH",   # flake8-type-checking
+    "TC",    # flake8-type-checking
     "INT",   # flake8-gettext
     "ARG",   # flake8-unused-arguments
     "PTH",   # flake8-use-pathlib
@@ -96,7 +96,6 @@ select = [
     "RUF",   # ruff-specific rules
 ]
 ignore = [
-  "ANN101",  # deprecated
   "CPY",     # copyright are checked with reuse
   "W191",    # conflict when used with the formatter
   "E111",    # conflict when used with the formatter
@@ -112,7 +111,7 @@ ignore = [
   "ISC001",  # conflict when used with the formatter
   "ISC002",  # conflict when used with the formatter
   "S",       # checked with bandit
-  "TCH001", "TCH002", "TCH003"  # See https://github.com/beartype/beartype/discussions/460
+  "TC001", "TC002", "TC003"  # See https://github.com/beartype/beartype/discussions/460
 ]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = [
@@ -156,7 +155,7 @@ fixable = [
     "SLOT",  # flake8-slot
     "SIM",   # flake8-simplify
     "TID",   # flake8-tidy-imports
-    "TCH",   # flake8-type-checking
+    "TC",    # flake8-type-checking
     "INT",   # flake8-gettext
     "ARG",   # flake8-unused-arguments
     "PTH",   # flake8-use-pathlib

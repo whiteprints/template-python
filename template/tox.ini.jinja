@@ -1,9 +1,8 @@
 [tox]
 min_version = 4.4.0
-base_python={{ target_python_version }}
 requires =
     tox-uv>=1.16.0
-    uv>=0.5.1
+    uv>=0.5.4
 labels =
     tests = {{ tox_python_list }}
     check-types = {{ tox_python_list }}-check-types

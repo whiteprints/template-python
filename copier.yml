@@ -91,7 +91,7 @@ _tasks:
   - ["git", "config", "--local", "user.name", "{{ author }}"]
   - ["git", "config", "--local", "user.email", "{{ author_email }}"]
   - ["uv", "--quiet", "--no-progress", "lock", "--python", "3.{{ target_python_version[3:] }}"]
-  - ["uvx", "--quiet", "--no-progress", "--python", "3.{{ target_python_version[3:] }}", "tox", "run", "-e", "translation-extract"]
+  - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "translation-extract"]
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
     "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",

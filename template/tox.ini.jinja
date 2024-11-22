@@ -2,7 +2,7 @@
 min_version = 4.4.0
 requires =
     tox-uv>=1.16.0
-    uv>=0.5.4
+    uv>=0.5.1
 labels =
     tests = {{ tox_python_list }}
     check-types = {{ tox_python_list }}-check-types
@@ -33,7 +33,7 @@ uv_bin =
 uvx_bin =
     uvx --quiet --no-progress --python={env_python}
 runner = uv-venv-lock-runner
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=tests, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=tests
 commands =
     pytest {tty:--color=yes} {posargs: \
         --html={work_dir}{/}test_report.html \
@@ -85,7 +85,7 @@ commands =
 
 [testenv:{{ tox_python_list }}-check-types]
 description = check the types
-uv_sync_flags = --verbose, --no-progress, --group=check-types, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --no-progress, --group=check-types, --no-install-project
 commands =
     pyright {posargs: \
         --pythonpath {env_python} \

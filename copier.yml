@@ -202,6 +202,6 @@ _tasks:
   ]
     when: "{{ code_license_id == '' }}"
   - ["git", "add", "--all"]
-  - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "autofix", "--"]
+  - ["uvx", "--quiet", "--no-progress", "--python", "3.{{ target_python_version[3:] }}", "tox", "run", "-e", "autofix", "--"]
   - ["git", "add", "--update"]
   - ["git", "commit", "--message", "Initial commit: 🥇 set up Python project"]

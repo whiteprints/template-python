@@ -91,7 +91,7 @@ _tasks:
   - ["git", "config", "--local", "user.name", "{{ author }}"]
   - ["git", "config", "--local", "user.email", "{{ author_email }}"]
   - ["uv", "--quiet", "--no-progress", "lock", "--python", "3.{{ target_python_version[3:] }}"]
-  - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "translation-extract"]
+  - ["uvx", "--python", "3.{{ target_python_version[3:] }}", "--quiet", "--no-progress", "tox", "run", "-e", "translation-extract"]
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
     "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
@@ -202,6 +202,6 @@ _tasks:
   ]
     when: "{{ code_license_id == '' }}"
   - ["git", "add", "--all"]
-  - ["uvx", "--quiet", "--no-progress", "tox", "run", "-e", "autofix", "--"]
+  - ["uvx", "--python", "3.{{ target_python_version[3:] }}", "--quiet", "--no-progress", "tox", "run", "-e", "autofix", "--"]
   - ["git", "add", "--update"]
   - ["git", "commit", "--message", "Initial commit: 🥇 set up Python project"]

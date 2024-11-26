@@ -31,9 +31,9 @@ description = run the test suite under {base_python}
 uv_bin =
     uv --no-progress
 uvx_bin =
-    uvx --quiet --no-progress --python={env_python}
+    uvx --quiet --no-progress
 runner = uv-venv-lock-runner
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=tests, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=tests
 commands =
     pytest {tty:--color=yes} {posargs: \
         --html={work_dir}{/}test_report.html \
@@ -75,7 +75,7 @@ pass_env =
 
 [testenv:lint]
 description = static code analysis
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=lint, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=lint, --no-install-project
 commands =
     pylint {tty:--output-format=colorized} {posargs: \
         --rcfile .pylintrc \
@@ -85,7 +85,7 @@ commands =
 
 [testenv:{{ tox_python_list }}-check-types]
 description = check the types
-uv_sync_flags = --verbose, --no-progress, --group=check-types, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --no-progress, --group=check-types, --no-install-project
 commands =
     pyright {posargs: \
         --pythonpath {env_python} \
@@ -131,7 +131,7 @@ allowlist_externals =
 
 [testenv:coverage-combine]
 description = combine coverage
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, --no-install-project
 change_dir = {work_dir}
 depends =
     pre-commit
@@ -146,7 +146,7 @@ set_env =
 
 [testenv:coverage-report]
 description = report coverage to various file
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, --no-install-project
 depends =
     coverage-combine
 commands =
@@ -165,7 +165,7 @@ commands =
 
 [testenv:coverage]
 description = display coverage
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=coverage, --no-install-project
 depends =
     coverage-combine
 commands =
@@ -210,7 +210,7 @@ pass_env =
 
 [testenv:check-vulnerabilities]
 description = check for vulnerabilities
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=check-vulnerabilities, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=check-vulnerabilities, --no-install-project
 depends =
     pre-commit
 commands =
@@ -221,7 +221,7 @@ commands =
 
 [testenv:check-exceptions]
 description = check exceptions
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=check-exceptions, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=check-exceptions, --no-install-project
 depends =
     pre-commit
 deps =
@@ -234,7 +234,7 @@ commands =
 
 [testenv:audit-code-maintainability]
 description = audit the code maintainability
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=audit-maintainability, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=audit-maintainability, --no-install-project
 depends =
     pre-commit
 commands =
@@ -246,7 +246,7 @@ commands =
 
 [testenv:check-code-maintainability]
 description = check the code maintainability
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=check-maintainability, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=check-maintainability, --no-install-project
 depends =
     pre-commit
 commands =
@@ -287,7 +287,7 @@ commands =
 
 [testenv:print-dependency-tree]
 description = print the dependency tree.
-uv_sync_flags = --verbose, --color=never, --no-progress, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress
 commands =
     {[testenv]uv_bin} \
         tree \
@@ -309,7 +309,7 @@ commands =
 
 [testenv:build-documentation]
 description = build the documentation
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=build-documentation, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=build-documentation
 depends =
     pre-commit
 commands =
@@ -322,7 +322,7 @@ commands =
 
 [testenv:serve-documentation]
 description = build and display the documentation. Use the environment variable BROWSER to change the browser used to display the documentation.
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=serve-documentation, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=serve-documentation
 depends =
     pre-commit
 commands =
@@ -337,7 +337,7 @@ pass_env =
 
 [testenv:check-documentation-links]
 description = check the documentation links
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=build-documentation, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=build-documentation
 depends =
     pre-commit
 commands =
@@ -350,7 +350,7 @@ commands =
 
 [testenv:translation-extract]
 description = extract the translation template files from sources
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=localization, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=localization, --no-install-project
 commands =
     pybabel \
         --quiet extract --omit-header --sort-by-file \
@@ -359,7 +359,7 @@ commands =
 
 [testenv:translation-init]
 description = create new message catalogs from a POT file
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=localization, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=localization, --no-install-project
 commands =
     pybabel \
         --quiet init --omit-header \
@@ -368,7 +368,7 @@ commands =
 
 [testenv:translation-update]
 description = update existing message catalogs from a POT file
-uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=localization, --no-install-project, --python={env_python}
+uv_sync_flags = --verbose, --color=never, --no-progress, --only-group=localization, --no-install-project
 commands =
     pybabel \
         --quiet update --omit-header \

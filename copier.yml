@@ -90,7 +90,7 @@ _tasks:
   - ["git", "init"]
   - ["git", "config", "--local", "user.name", "{{ author }}"]
   - ["git", "config", "--local", "user.email", "{{ author_email }}"]
-  - ["uv", "--quiet", "--no-progress", "lock", "--python"]
+  - ["uv", "--quiet", "--no-progress", "lock"]
   - [
     "uvx", "--quiet", "--no-progress",
     "tox", "run", "-e", "translation-extract"

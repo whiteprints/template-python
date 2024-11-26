@@ -33,7 +33,7 @@ uv_bin =
 uvx_bin =
     uvx --quiet --no-progress --python={env_python}
 runner = uv-venv-lock-runner
-uv_sync_flags = --verbose, --color=never, --no-progress, --group=tests
+uv_sync_flags = --verbose, --color=never, --no-progress, --group=tests --python={env_python}
 commands =
     pytest {tty:--color=yes} {posargs: \
         --html={work_dir}{/}test_report.html \

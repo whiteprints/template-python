@@ -25,20 +25,20 @@ repos:
         entry: reuse
         description: "[License] Lint the chand file for compliance with the REUSE Specification"
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.0
+    rev: v0.8.1
     hooks:
       - id: ruff-format
         name: "ruff format"
         description: "[Fix] Reformat the code"
-        entry: ruff format --preview --config=.ruff.toml
+        entry: ruff format --config=.ruff.toml
         exclude: ^(gen_ref_pages.py)
       - id: ruff
         name: "ruff fix"
         description: "[Fix] Reformat the code"
-        entry: ruff check --preview --config .ruff.toml --fix-only
+        entry: ruff check --config .ruff.toml --fix-only
         exclude: ^(gen_ref_pages.py)
       - id: ruff
         name: "ruff check"
         description: "[Fix] Lint issues"
-        entry: ruff check --preview --config=.ruff.toml
+        entry: ruff check --config=.ruff.toml
         exclude: ^(gen_ref_pages.py)

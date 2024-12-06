@@ -1,11 +1,7 @@
-ARG PYTHON_VERSION=3.13.0
-ARG BASE_OS=alpine3.20
-ARG DIGEST="sha256:81362dd1ee15848b118895328e56041149e1521310f238ed5b2cdefe674e6dbf"
-
 ARG UV_COMPILE_BYTECODE=1
 ARG PYTHONDONTWRITEBYTECODE=1
-ARG PYTHONBUFFERED=1
-ARG TAG=${PYTHON_VERSION}-${BASE_OS}${DIGEST:+@${DIGEST}}
+ARG PYTHONUNBUFFERED=1
+ARG TAG=3.13.0-alpine3.20@sha256:81362dd1ee15848b118895328e56041149e1521310f238ed5b2cdefe674e6dbf
 
 ARG VIRTUAL_ENV=/opt/venv
 
@@ -22,9 +18,7 @@ ARG VIRTUAL_ENV=/opt/venv
 #   - These Python packages usually only provide binary wheels for GLIBC, so
 #   the packages will need to be recompiled fully within the container images,
 #   increasing build times.
-ARG UV_VERSION=0.4.25
-ARG UV_DIGEST="sha256:75ea96bbba2e43a11c90173f1b963eb2354a18e7673d2b0ee8e9428fa4afec7a"
-ARG UV_TAG=${UV_VERSION}${UV_DIGEST:+@${UV_DIGEST}}
+ARG UV_TAG=0.4.25@sha256:75ea96bbba2e43a11c90173f1b963eb2354a18e7673d2b0ee8e9428fa4afec7a
 ARG UV_BIN="/usr/local/bin"
 
 FROM ghcr.io/astral-sh/uv:${UV_TAG} AS uv_image
@@ -44,7 +38,7 @@ COPY --from=uv_image /uv ${UV_BIN}/uv
 
 ARG UV_COMPILE_BYTECODE
 ARG PYTHONDONTWRITEBYTECODE
-ARG PYTHONBUFFERED
+ARG PYTHONUNBUFFERED
 ARG VIRTUAL_ENV
 
 ENV UV_LINK_MODE=copy \
@@ -118,9 +112,9 @@ ENV HOME=${HOME}
 WORKDIR ${HOME}
 
 ARG PYTHONDONTWRITEBYTECODE
-ARG PYTHONBUFFERED
+ARG PYTHONUNBUFFERED
 ENV PYTHONDONTWRITEBYTECODE=${PYTHONDONTWRITEBYTECODE} \
-    PYTHONBUFFERED=${PYTHONBUFFERED}
+    PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
 
 ENTRYPOINT ["python"]
 
@@ -144,5 +138,4 @@ LABEL org.opencontainers.image.authors='{{ author }} <{{ author_email }}>' \
       org.opencontainers.image.title='{{ package_name }}' \
       org.opencontainers.image.description='{{ description }}' \
       org.opencontainers.image.ref.name=${TAG} \
-      org.opencontainers.image.base.name='docker.io/python:'${TAG} \
-      org.opencontainers.image.base.digest=${DIGEST}
+      org.opencontainers.image.base.name='docker.io/python:'${TAG}

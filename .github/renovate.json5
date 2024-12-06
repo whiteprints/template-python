@@ -1,0 +1,63 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'group:monorepos',
+    'group:recommended',
+    'replacements:all',
+    'workarounds:all',
+    'docker:pinDigests',
+    'helpers:pinGitHubActionDigests',
+    ':pinDependencies',
+    ':pinDevDependencies',
+    ':configMigration',
+    ':dependencyDashboard',
+  ],
+  lockFileMaintenance: {
+    enabled: true,
+    extends: [
+      'group:all',
+    ],
+    automerge: true
+  },
+  packageRules: [
+    {
+      matchManagers: [
+        'github-actions',
+      ],
+      commitMessagePrefix: 'ci(dependencies): 👷',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'dependencies',
+        'ci',
+      ],
+      automerge: true
+    },
+    {
+      matchManagers: [
+        'dockerfile',
+      ],
+      commitMessagePrefix: 'build(container): 📦',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'dependencies',
+        'container',
+      ],
+      automerge: true
+    },
+    {
+      matchManagers: [
+        'pep621',
+      ],
+      matchFileNames: [
+        'pyproject.toml',
+      ],
+      commitMessagePrefix: 'build(dependencies): ⬆️',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'dependencies',
+      ],
+      automerge: true
+    },
+  ],
+}

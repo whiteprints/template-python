@@ -91,23 +91,19 @@ _tasks:
   - ["git", "config", "--local", "user.name", "{{ author }}"]
   - ["git", "config", "--local", "user.email", "{{ author_email }}"]
   - ["uv", "--quiet", "--no-progress", "lock", "--python", "3.{{ target_python_version[3:] }}"]
-  - [
-    "uvx", "--python", "3.{{ target_python_version[3:] }}", "--quiet", "--no-progress", "--with", "tox-uv",
-    "tox", "run", "-e", "translation-extract"
-  ]
+  - ["uvx", "--from", "rust-just", "just", "translation-extract"]
   - command: [
     "uvx", "--quiet", "--no-progress", "reuse", "annotate",
     "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--license", "{{ code_license_id }}",
     "--copyright-prefix", "spdx-symbol",
     "--recursive", "--style", "python",
-    "src/", "tests/", "container/", "docs/conf.py", "scripts",
-    "hatch_build.py", "hatch.toml", "REUSE.toml",
-    "tox.ini",
+    "src/", "tests/", "container/", "docs/conf.py",
+    "hatch_build.py", "hatch.toml", "REUSE.toml", "justfile",
+    "pyproject.toml", ".python-versions",
     "pytest.ini", ".ruff.toml", ".pylintrc", "bandit.yaml",
     ".pre-commit-config.yaml", ".coveragerc", ".editorconfig",
-    "pyrightconfig.json", ".pyrightconfig_tox.json",
-    ".gitignore", ".gitattributes",
+    "pyrightconfig.json", ".gitignore", ".gitattributes",
   ]
     when: "{{ code_license_id != '' }}"
   - command: [
@@ -115,13 +111,12 @@ _tasks:
     "--copyright", "SPDX-FileCopyrightText: {{ header }}",
     "--license", "LicenseRef-PROPRIETARY",
     "--recursive", "--style", "python",
-    "src/", "tests/", "container/", "docs/conf.py", "scripts",
-    "hatch_build.py", "hatch.toml", "REUSE.toml",
-    "tox.ini", "pyproject.toml",
+    "src/", "tests/", "container/", "docs/conf.py",
+    "hatch_build.py", "hatch.toml", "REUSE.toml", "justfile",
+    "pyproject.toml", ".python-versions",
     "pytest.ini", ".ruff.toml", ".pylintrc", "bandit.yaml",
     ".pre-commit-config.yaml", ".coveragerc", ".editorconfig",
-    "pyrightconfig.json", ".pyrightconfig_tox.json",
-    ".gitignore", ".gitattributes",
+    "pyrightconfig.json", ".gitignore", ".gitattributes",
   ]
     when: "{{ code_license_id == '' }}"
   - command: [
@@ -176,7 +171,7 @@ _tasks:
     "--copyright", "{{ copyright_holder }} <{{ copyright_holder_email }}>",
     "--license", "{{ code_license_id }}",
     "--style", "python",
-    "pyproject.toml",
+    "pyproject.toml", "uv.toml",
   ]
     when: "{{ code_license_id != '' }}"
   - command: [
@@ -184,7 +179,7 @@ _tasks:
     "--copyright", "SPDX-FileCopyrightText: {{ header }}",
     "--license", "LicenseRef-PROPRIETARY",
     "--style", "python",
-    "pyproject.toml",
+    "pyproject.toml", "uv.toml",
   ]
     when: "{{ code_license_id == '' }}"
   - command: [
@@ -205,9 +200,6 @@ _tasks:
   ]
     when: "{{ code_license_id == '' }}"
   - ["git", "add", "--all"]
-  - [
-    "uvx", "--python", "3.{{ target_python_version[3:] }}", "--quiet", "--no-progress", "--with", "tox-uv",
-    "tox", "run", "-e", "autofix", "--"
-  ]
+  - ["uvx", "--from", "rust-just", "just", "autofix"]
   - ["git", "add", "--update"]
   - ["git", "commit", "--message", "Initial commit: 🥇 set up Python project"]

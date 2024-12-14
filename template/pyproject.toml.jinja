@@ -27,16 +27,14 @@ classifiers = [
     "Environment :: Console",
     "Framework :: Pytest",
     "Framework :: Sphinx",
-    "Framework :: tox",
     "Intended Audience :: Developers",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
-{%- for i in range(target_python_version[3:] | int, latest_python) %}
+{%- for i in range(target_python_version[3:] | int, latest_python + 1) %}
     "Programming Language :: Python :: 3.{{ i }}",
 {%- endfor %}
-    "Programming Language :: Python :: 3.{{ latest_python }}",
     "Typing :: Typed",
 {%- if code_license_id == '' or resources_license_id == '' %}
     "Private :: Do Not Upload",
@@ -139,12 +137,3 @@ column_width = 79
 indent = 4
 keep_full_version = true
 max_supported_python = "3.{{ latest_python }}"
-
-[tool.uv]
-managed = true
-cache-keys = [
-    { git = { commit = true, tags = true } },
-    { file = "pyproject.toml" },
-    { file = "hatch.toml" },
-    { file = "hatch_build.py" },
-]

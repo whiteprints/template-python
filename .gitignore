@@ -2,8 +2,7 @@
 .secrets.*
 
 ## Integration
-.nox
-.tox
+.just
 .venv
 
 ## Generated files

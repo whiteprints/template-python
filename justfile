@@ -108,3 +108,24 @@ test-proprietary python:
 all:
     @just for-all-python test-open-source
     @just for-all-python test-proprietary
+
+# Run pre-commit
+pre-commit args="":
+    @just uvx " \
+        --with pre-commit-uv \
+    pre-commit run \
+        --all-files \
+        --show-diff-on-failure \
+        {{ args }} \
+    "
+
+# Run `reuse`
+reuse args="":
+    @just uvx " \
+        reuse \
+        {{ args }} \
+    "
+
+# Check licenses
+check-licenses:
+    @just reuse lint

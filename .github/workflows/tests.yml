@@ -14,33 +14,27 @@ concurrency:
 
 jobs:
   check:
-    name: tox env ${{ matrix.tox_env }} under python ${{ matrix.python }}
+    name: just ${{ matrix.receipt }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
         python:
           - "3.13"
-        tox_env:
+        receipt:
           - pre-commit
     steps:
       - name: Check out the repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install uv
         uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
-      - name: Pick environment to run
-        run: |
-          import os;
-          env = "TOXENV=${{ matrix.tox_env }}\n"
-          with open(os.environ["GITHUB_ENV"], mode="a", encoding="utf-8") as file_handler:
-              file_handler.write(env)
-        shell: python
+      - name: Install just
+        uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2
       - name: Run the test suite
         run: |
-          echo $TOXENV
-          uvx --quiet --no-progress --with tox-uv tox -vvv run
+          just ${{ matrix.receipt }}
   test:
-    name: Run ${{ matrix.session }} tests under python ${{ matrix.python }} on ${{ matrix.os }}
+    name: Run ${{ matrix.diffusion }} tests under python ${{ matrix.python }} on ${{ matrix.os }}
     needs: check
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
@@ -57,7 +51,7 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-        session:
+        diffusion:
           - open-source
           - proprietary
     steps:
@@ -65,17 +59,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install uv
         uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
-      - name: Pick environment to run
-        run: |
-          import os;
-          env = "TOXENV=py{}{}-test-${{ matrix.session }}\n".format(*"${{ matrix.python }}".split("."))
-          with open(os.environ["GITHUB_ENV"], mode="a", encoding="utf-8") as file_handler:
-              file_handler.write(env)
-        shell: python
+      - name: Install just
+        uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2
       - name: Run the test suite
         run: |
-          git config --global init.defaultBranch main
-          git config --global user.email whiteprints@pm.me
-          git config --global user.name Whiteprints
-          echo $TOXENV
-          uvx --quiet --no-progress --with tox-uv tox run
+          just test-${{ matrix.diffusion }} ${{ matrix.python }}

@@ -397,9 +397,9 @@ check-vulnerabilities:
     @just bandit " \
         --recursive \
         --configfile=bandit.yaml \
-        {{ justfile_directory() }}/src \
-        {{ justfile_directory() }}/tests \
-        {{ justfile_directory() }}/docs \
+        '{{ justfile_directory() }}/src' \
+        '{{ justfile_directory() }}/tests' \
+        '{{ justfile_directory() }}/docs' \
     "
 
 # Run `tryceratops`
@@ -413,9 +413,9 @@ tryceratops args="":
 # Check code exceptions (static analysis)
 check-exceptions:
     @just tryceratops " \
-        src \
-        tests \
-        docs \
+        '{{ justfile_directory() }}/src' \
+        '{{ justfile_directory() }}/tests' \
+        '{{ justfile_directory() }}/docs' \
     "
 
 # Run `radon`
@@ -429,9 +429,9 @@ radon args="":
 audit-code-maintainability:
     @just radon " \
         mi \
-        tests \
-        docs \
-        src \
+        '{{ justfile_directory() }}/src' \
+        '{{ justfile_directory() }}/tests' \
+        '{{ justfile_directory() }}/docs' \
     "
 
 # Run `xenon`
@@ -447,9 +447,9 @@ check-code-maintainability:
         --max-average=A \
         --max-modules=A \
         --max-absolute=A \
-        tests \
-        docs \
-        src \
+        '{{ justfile_directory() }}/src' \
+        '{{ justfile_directory() }}/tests' \
+        '{{ justfile_directory() }}/docs' \
     "
 
 # Check licenses

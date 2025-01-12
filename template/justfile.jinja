@@ -14,6 +14,7 @@ default:
 init:
     [ -d .just ] || mkdir "{{ justfile_directory() }}/.just"
     uv sync \
+        --refresh \
         --frozen \
         --all-groups \
         --all-extras
@@ -58,6 +59,7 @@ uvr args="":
         --isolated \
         --no-dev \
         --no-editable \
+        --refresh \
         --frozen \
         {{ args }} \
     "
@@ -105,8 +107,12 @@ clean-translation:
 clean dist:
     rm -rf dist
 
+clean-coverage:
+    rm -f "{{ justfile_directory() }}/.just/.coverage*"
+
 # Clean everything
 clean-all:
+    @just clean-coverage
     @just clean-python
     @just clean-BOM
     @just clean-just
@@ -122,6 +128,7 @@ for-all-python receipt args="":
 
 # Run the tests with pytest for a given Python and wheel
 test-wheel python wheel: (venv "test" python wheel)
+    rm -f ".just/.coverage.{{ arch() }}-{{ os() }}-{{ python }} .just/.coverage"
     @just requirements " \
         --only-group=tests \
         --output-file='\
@@ -170,6 +177,7 @@ test-wheel python wheel: (venv "test" python wheel)
 
 # Run the tests with pytest for a given Python
 test python: (venv "test" python)
+    rm -f ".just/.coverage.{{ arch() }}-{{ os() }}-{{ python }} .just/.coverage"
     @TMPDIR="{{ justfile_directory() }}/.just/test/{{ python }}/tmp/" \
     PYTHONOPTIMIZE=0 \
     COVERAGE_FILE="\

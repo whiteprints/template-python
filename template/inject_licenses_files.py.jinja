@@ -42,12 +42,10 @@ def update_license_files_in_pyproject_toml(
         data = tomllib.load(file)
         project = data.setdefault("project", {})
 
-        project["license-files"] = {
-            "paths": list(
-                set(project.get("license-files", {}).get("paths", []))
-                | {f"LICENSES/{license}.txt" for license in licenses}
-            )
-        }
+        project["license-files"] = list(
+              set(project.get("license-files", {})
+              | {f"LICENSES/{license}.txt" for license in licenses}
+          )
 
     with Path("pyproject.toml").open("wb") as file:
         tomli_w.dump(data, file)

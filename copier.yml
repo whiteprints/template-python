@@ -2,7 +2,7 @@ project_name:
   type: str
   help: What is your project name?
   validator: >-
-    {% if not (project_name | regex_search('^[A-Za-z][A-Za-z0-9-_ ]*$')) %}
+    {% if not (project_name | regex_search('^[A-Za-z][A-Za-z0-9-_ .]*$')) %}
         The project name must start with a letter, followed one or more letters,
         digits, spaces, underscores or dashes all lowercase.
     {% endif %}

@@ -48,11 +48,13 @@ venv receipt python wheel="": init
             "{{ justfile_directory() }}/.just/{{ receipt }}/{{ wheel }}/{{ python }}/.venv"
 
 # Run `uv`
+[no-exit-message]
 uv args="":
     uv \
     {{ args }}
 
 # Run `uv run`
+[no-exit-message]
 uvr args="":
     @just uv " \
         run \
@@ -65,6 +67,7 @@ uvr args="":
     "
 
 # Run `uv tool run`
+[no-exit-message]
 uvx args="":
     @just uv " \
         tool run \
@@ -73,6 +76,7 @@ uvx args="":
     "
 
 # Export a pip requirements file
+[no-exit-message]
 requirements args="":
     @just uv " \
         export \
@@ -84,6 +88,7 @@ requirements args="":
     "
 
 # Clean Python temporary files
+[no-exit-message]
 clean-python:
     @just uvx "pyclean ."
 
@@ -121,6 +126,7 @@ clean-all:
     @just clean-dist
 
 # Run a receipt for all Python versions (found in the .python-versions file). Works for all receipt whose first argument is a Python version
+[no-exit-message]
 for-all-python receipt args="":
     for python in `grep -v '^#' '{{ justfile_directory() }}/.python-versions'`; do \
         just {{ receipt }} $python {{ args }}; \
@@ -210,6 +216,7 @@ test-report python:
     $BROWSER "{{ justfile_directory() }}/.just/.test_report.{{ python }}.html"
 
 # Run pre-commit
+[no-exit-message]
 pre-commit args="":
     @just uvx " \
         --with pre-commit-uv \
@@ -312,6 +319,7 @@ coverage args="":
     "
 
 # Run `reuse`
+[no-exit-message]
 reuse args="":
     @just uvx " \
         reuse \
@@ -330,6 +338,7 @@ BOM-licenses:
     "
 
 # Run `pip-audit`
+[no-exit-message]
 pip-audit args="":
     @just uvx " \
         pip-audit \
@@ -379,7 +388,6 @@ BOM:
     @just for-all-python BOM-vulnerabilities
 
 # Try to autofix a maximum of errors and typos
-[no-exit-message]
 autofix:
     -@just pre-commit trailing-whitespace
     -@just pre-commit pyproject-fmt
@@ -387,6 +395,7 @@ autofix:
     -@just pre-commit ruff
 
 # Run `bandit`
+[no-exit-message]
 bandit args="":
     @just uvx " \
         bandit \
@@ -404,6 +413,7 @@ check-vulnerabilities:
     "
 
 # Run `tryceratops`
+[no-exit-message]
 tryceratops args="":
     @just uvr " \
         --group=check-exceptions \
@@ -420,6 +430,7 @@ check-exceptions:
     "
 
 # Run `radon`
+[no-exit-message]
 radon args="":
     @just uvx " \
         radon \
@@ -436,6 +447,7 @@ audit-code-maintainability:
     "
 
 # Run `xenon`
+[no-exit-message]
 xenon args="":
     @just uvx " \
         xenon \
@@ -473,6 +485,7 @@ check-supply-chain python: (venv "check-supply-chain" python)
     "
 
 # Run `sphinx-build`
+[no-exit-message]
 sphinx-build args="":
     @just uvr " \
             --group=build-documentation \
@@ -493,6 +506,7 @@ check-documentation-links dest="docs_build":
     @just sphinx-build "--builder=linkcheck '{{ dest }}'"
 
 # Run `sphinx-autobuild`
+[no-exit-message]
 sphinx-autobuild args="":
     @just uvr " \
             --group=serve-documentation \
@@ -510,6 +524,7 @@ serve-documentation port="0":
     @just sphinx-autobuild "--port={{ port }}"
 
 # Run `pybabel`
+[no-exit-message]
 pybabel args="":
     @just uvr " \
         --only-group=localization \

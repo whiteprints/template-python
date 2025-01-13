@@ -379,6 +379,7 @@ BOM:
     @just for-all-python BOM-vulnerabilities
 
 # Try to autofix a maximum of errors and typos
+[no-exit-message]
 autofix:
     -@just pre-commit trailing-whitespace
     -@just pre-commit pyproject-fmt

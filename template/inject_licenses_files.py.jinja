@@ -86,20 +86,22 @@ def parse_spdx_expression(expression: str) -> set[str]:
 
 def main() -> None:
     """Add the License-File."""
-    update_license_files_in_pyproject_toml(
+    licenses = (
+        (
 {%- if code_license_id != "" %}
-        list_licenses() & parse_spdx_expression("{{ code_license_id }}")
+            list_licenses() & parse_spdx_expression("{{ code_license_id }}")
 {%- else %}
-        list_licenses() & parse_spdx_expression("LicenseRef-PROPRIETARY")
+            list_licenses() & parse_spdx_expression("LicenseRef-PROPRIETARY")
 {%- endif %}
-    )
-    update_license_files_in_pyproject_toml(
+        ) | (
 {%- if resources_license_id != "" %}
-        list_licenses() & parse_spdx_expression("{{ resources_license_id }}")
+            list_licenses() & parse_spdx_expression("{{ resources_license_id }}")
 {%- else %}
-        list_licenses() & parse_spdx_expression("LicenseRef-PROPRIETARY")
+            list_licenses() & parse_spdx_expression("LicenseRef-PROPRIETARY")
 {%- endif %}
+        )
     )
+    update_license_files_in_pyproject_toml(licenses)
 
 
 if __name__ == "__main__":

@@ -84,7 +84,7 @@ target_python_version:
 _subdirectory: "template"
 _jinja_extensions:
   - jinja2_time.TimeExtension
-  - whiteprints_template_context.context.ContextUpdater
+  # - whiteprints_template_context.context.ContextUpdater
   - whiteprints_template_context.filters.WhiteprintsFilters
 _tasks:
   - ["git", "init"]

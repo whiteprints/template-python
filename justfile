@@ -72,7 +72,7 @@ uvx args="":
 # Test the template
 test python license: (venv "test" python license)
     @just uvx "\
-        --with whiteprints-template-context>=0.6.0 \
+        --with whiteprints-template-context \
         copier copy \
         --trust \
         --force \
